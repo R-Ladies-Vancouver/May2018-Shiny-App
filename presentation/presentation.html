@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>An Introduction to R-Shiny</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Akshi Chaudhary   Nazlı Özüm Kafaee" />
+    <meta name="date" content="2018-05-24" />
+    <link href="presentation_files/remark-css/default.css" rel="stylesheet" />
+    <link href="presentation_files/remark-css/rladies.css" rel="stylesheet" />
+    <link href="presentation_files/remark-css/rladies-fonts.css" rel="stylesheet" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# An Introduction to R-Shiny
+## A workshop for R-Ladies Vancouver
+### Akshi Chaudhary <br/> Nazlı Özüm Kafaee
+### May 24, 2018
+
+---
+
+
+
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# WHAT IS R-SHINY?
+
+&lt;br/&gt;
+
+- Tool that enables R scripts to turn into interactive web applications
+
+![](images/server_ui.png)
+
+- 2 main components:
+
+  - User Interface
+  - Server
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# STRUCTURE OF AN R-SHINY APP
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# A VERY BASIC SHINY APP
+
+&lt;br/&gt;
+
+
+```r
+install.packages("shiny")
+```
+
+
+
+```r
+library(shiny) #load the package
+
+ui &lt;- fluidPage("Hello World") # user interface
+
+server &lt;- function(input, output) {} # the server
+
+shinyApp(ui = ui, server = server) # launch the app
+```
+
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# INPUTS
+
+&lt;br/&gt;
+
+
+```r
+ui &lt;- fluidPage(
+ # Input() functions,
+ # Output() functions
+)
+```
+
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# INPUT: `sliderInput()`
+
+&lt;br/&gt;
+
+
+```r
+ui &lt;- fluidPage(
+* sliderInput(inputId = "num",
+*             label = "Choose a number",
+*             value = 25, min = 1, max = 100)
+)
+```
+
+- `?sliderInput`
+
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# OTHER INPUT FUNCTIONS
+
+![](images/input_functions.png)
+
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# INPUTS AND OUTPUTS
+
+&lt;br/&gt;
+
+
+```r
+library(shiny) #load the package
+
+ui &lt;- fluidPage(
+  sliderInput(inputId = "num",
+              label = "Choose a number",
+              value = 25, min = 1, max = 100),
+  
+  plotOutput("hist")
+  
+) # user interface
+
+server &lt;- function(input, output) {} # the server
+
+shinyApp(ui = ui, server = server) # launch the app
+```
+
+
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# SERVER
+
+- Assemble inputs into outputs
+
+1) Save objects to display to output$
+  
+
+```r
+server &lt;- function(input, output) {
+  output$hist &lt;- #code
+}
+```
+  
+2) Build objects to display with render*()
+  
+  - `render*()` functions --&gt; build reactive output to display in UI
+  
+3) Use input values with `input$*`
+  
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# WHERE TO GO NEXT?
+
+- [RStudio Tutorials](https://shiny.rstudio.com/tutorial/)
+    </textarea>
+<script src="https://remarkjs.com/downloads/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightLines": true
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {
+  window.dispatchEvent(new Event('resize'));
+});
+(function() {
+  var d = document, s = d.createElement("style"), r = d.querySelector(".remark-slide-scaler");
+  if (!r) return;
+  s.type = "text/css"; s.innerHTML = "@page {size: " + r.style.width + " " + r.style.height +"; }";
+  d.head.appendChild(s);
+})();</script>
+
+<script>
+(function() {
+  var i, text, code, codes = document.getElementsByTagName('code');
+  for (i = 0; i < codes.length;) {
+    code = codes[i];
+    if (code.parentNode.tagName !== 'PRE' && code.childElementCount === 0) {
+      text = code.textContent;
+      if (/^\\\((.|\s)+\\\)$/.test(text) || /^\\\[(.|\s)+\\\]$/.test(text) ||
+          /^\$\$(.|\s)+\$\$$/.test(text) ||
+          /^\\begin\{([^}]+)\}(.|\s)+\\end\{[^}]+\}$/.test(text)) {
+        code.outerHTML = code.innerHTML;  // remove <code></code>
+        continue;
+      }
+    }
+    i++;
+  }
+})();
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
