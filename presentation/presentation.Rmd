@@ -11,17 +11,14 @@ output:
 ---
 
 ```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE, eval=FALSE)
+knitr::opts_chunk$set(echo = TRUE)
 ```
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
 
 # WHAT IS R-SHINY?
 
 <br/>
 
-- Tool that enables R scripts to turn into interactive web applications
+- A tool that enables R scripts to turn into interactive web applications
 
 ![](images/server_ui.png)
 
@@ -42,9 +39,21 @@ class: left, middle
   - `population` vs `year`
   - etc.
 ---
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
+
+```{r, fig.height=4, dev='svg'}
+library(gapminder)
+library(ggplot2)
+
+ggplot(data = gapminder,
+       aes(x = lifeExp, y = gdpPercap, colour = continent)) + 
+  geom_point(size = 1) +
+  labs(x = "Life Expectancy", y = "GDP per capita",
+       title = "GDP per capita vs Life Expectancy") + 
+  scale_y_log10() + theme_bw()
+```
+
+
+---
 
 # A VERY BASIC SHINY APP
 
@@ -54,7 +63,7 @@ background-position: 100% 0%
 install.packages("shiny")
 ```
 
-```{r}
+```{r, eval=FALSE}
 library(shiny) #load the package
 
 ui <- fluidPage("Hello World") # user interface
@@ -66,7 +75,7 @@ shinyApp(ui = ui, server = server) # launch the app
 
 # FINAL GOAL FOR THE WORKSHOP
 
-[Shiny App with Gapminder Dataset](https://ace8.shinyapps.io/test/)
+💜💜[Shiny App with Gapminder Dataset](https://ace8.shinyapps.io/test/)💜💜
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
@@ -86,13 +95,8 @@ class: left, middle
 - Make sure your simple app runs
 
 ---
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
 
 # THE LAYOUT
-
-<br/>
 
 .pull-left[
 ```{r, eval=FALSE}
@@ -120,33 +124,35 @@ shinyApp(ui = ui, server = server)
 ![](images/layout.png)
 
 ![](images/file_names.png)
-
 ]
 
 ---
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
 
-# UI : INPUTS
+# INPUTS
 
 <br/>
 
 ```{r, eval=FALSE}
+library(shiny)
+
 ui <- fluidPage(
- # Input() functions,
- # Output() functions
+  
+  sliderInput(inputId = "num", #<<
+              label = "Choose a number",#<<
+              value = 25, min = 1, max = 100),#<<
+  
 )
+
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
 ```
 
-- `?sliderInput`
+For help: `?sliderInput`
 
 ---
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
 
-# OTHER INPUT FUNCTIONS
+# INPUT FUNCTIONS
 
 ![](images/input_functions.png)
 
@@ -158,38 +164,107 @@ class: left, middle
 
 # MINI CHALLENGE #3
 
----
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
+Add a `sliderInput()` variable that enables users  
+to select a different period in time
 
-# INPUTS AND OUTPUTS
+**Bonus:**
+
+Add a `RadioButtons()` variable that  
+presents `pop`, `lifeExp` and `gdpPercap`   
+as options to select from  
+
+---
+
+<br/>
+<br/>
+
+```{r, eval=FALSE}
+ui <- fluidPage(
+   titlePanel("Gapminder"),
+
+   sidebarLayout(
+      sidebarPanel( 
+        
+        sliderInput("Year",   #<<
+                    label = h5("Range of years:"),#<<
+                    min = 1952,#<<
+                    max = 2007,#<<
+                    value = c(1952, 2007), #<<
+                    step = 5#<<
+                    ),#<<
+         
+         radioButtons("Variable", #<<
+                      label = h5("Select Variable"),#<<
+                      choices = c("Population" = "pop",#<<
+                                  "Life Expectancy" = "lifeExp",#<<
+                                  "GDP Per Capita" = "gdpPercap")#<<
+                      )#<<
+      ),
+      
+      mainPanel()
+   )
+)
+```
+
+
+---
+
+# OUTPUTS
 
 <br/>
 
 ```{r, eval=FALSE}
-library(shiny) #load the package
+library(shiny)
 
 ui <- fluidPage(
+  
   sliderInput(inputId = "num",
               label = "Choose a number",
               value = 25, min = 1, max = 100),
   
-  plotOutput("hist")
+  plotOutput("hist") #<<
   
-) # user interface
+)
 
-server <- function(input, output) {} # the server
+server <- function(input, output) {}
 
-shinyApp(ui = ui, server = server) # launch the app
+shinyApp(ui = ui, server = server)
 ```
 
+---
 
+```{r, eval=FALSE}
+ui <- fluidPage(
+   titlePanel("Gapminder"),
+
+   sidebarLayout(
+      sidebarPanel( 
+        
+        sliderInput("Year",   
+                    label = h5("Range of years:"),
+                    min = 1952,
+                    max = 2007,
+                    value = c(1952, 2007),
+                    step = 5
+                    ),
+         
+         radioButtons("Variable",
+                      label = h5("Select Variable"),
+                      choices = c("Population" = "pop",
+                                  "Life Expectancy" = "lifeExp",
+                                  "GDP Per Capita" = "gdpPercap")
+                      )
+      ),
+      
+      mainPanel(
+         plotOutput("GapminderPlot"), #<<
+         tableOutput("GapminderTable") #<<
+      )
+   )
+)
+```
 
 ---
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
 
 # SERVER
 
@@ -212,11 +287,12 @@ server <- function(input, output) {
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
+background-size: 400px
+background-position: 100% 50%
+class: left, middle
 
-# WHERE TO GO NEXT?
+# CHALLENGES NEVER END!
 
-- [RStudio Tutorials](https://shiny.rstudio.com/tutorial/)
+- [RStudio Tutorials](https://shiny.rstudio.com/tutorial/) 
 
 - Here are some examples:
