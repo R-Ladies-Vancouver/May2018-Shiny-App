@@ -29,14 +29,18 @@ background-position: 100% 0%
 
   - User Interface
   - Server
-
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
+background-size: 400px
+background-position: 100% 50%
+class: left, middle
 
-# STRUCTURE OF AN R-SHINY APP
+# MINI CHALLENGE #1
 
+- Create a plot with the gapminder dataset
+  - `life expectancy` vs `year`
+  - `population` vs `year`
+  - etc.
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
 background-size: 150px
@@ -44,12 +48,11 @@ background-position: 100% 0%
 
 # A VERY BASIC SHINY APP
 
-<br/>
+- Make sure you have the `shiny` package installed
 
-```{r}
+```{r, eval=FALSE}
 install.packages("shiny")
 ```
-
 
 ```{r}
 library(shiny) #load the package
@@ -61,13 +64,71 @@ server <- function(input, output) {} # the server
 shinyApp(ui = ui, server = server) # launch the app
 ```
 
+# FINAL GOAL FOR THE WORKSHOP
+
+[Shiny App with Gapminder Dataset](https://ace8.shinyapps.io/test/)
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 400px
+background-position: 100% 50%
+class: left, middle
+
+# MINI CHALLENGE #2
+
+
+- Create a local folder
+
+- Create an R script and name it `app.R`
+
+- Create your own "very basic" app
+
+- Make sure your simple app runs
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
 background-size: 150px
 background-position: 100% 0%
 
-# INPUTS
+# THE LAYOUT
+
+<br/>
+
+.pull-left[
+```{r, eval=FALSE}
+library(shiny)
+
+ui <- fluidPage(
+  sidebarLayout( #<<
+    sidebarPanel( #<<
+      # Input() functions #<<
+    ),  #<<
+    mainPanel( #<<
+      # Output() functions #<<
+    )  #<<
+  )  #<<
+)
+
+server <- function(input, output) {}
+
+shinyApp(ui = ui, server = server)
+```
+]
+
+.pull-right[
+
+![](images/layout.png)
+
+![](images/file_names.png)
+
+]
+
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 150px
+background-position: 100% 0%
+
+# UI : INPUTS
 
 <br/>
 
@@ -78,26 +139,7 @@ ui <- fluidPage(
 )
 ```
 
-
----
-background-image: url(images/04_RLadiesVan-logo.jpg)
-background-size: 150px
-background-position: 100% 0%
-
-# INPUT: `sliderInput()`
-
-<br/>
-
-```{r, eval=FALSE}
-ui <- fluidPage(
-  sliderInput(inputId = "num", #<<
-              label = "Choose a number", #<<
-              value = 25, min = 1, max = 100) #<<
-)
-```
-
 - `?sliderInput`
-
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
@@ -108,6 +150,13 @@ background-position: 100% 0%
 
 ![](images/input_functions.png)
 
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 400px
+background-position: 100% 50%
+class: left, middle
+
+# MINI CHALLENGE #3
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
@@ -169,3 +218,5 @@ background-position: 100% 0%
 # WHERE TO GO NEXT?
 
 - [RStudio Tutorials](https://shiny.rstudio.com/tutorial/)
+
+- Here are some examples:

@@ -8,6 +8,7 @@
 #
 
 library(shiny)
+
 library(ggplot2)
 library(dplyr)
 library(gapminder)
@@ -21,6 +22,7 @@ ui <- fluidPage(
    
    # Application title
    titlePanel("Gapminder"),
+
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
