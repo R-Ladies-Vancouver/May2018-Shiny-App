@@ -9,4 +9,4 @@
 * Publishing and deploying shiny app on shiny server
   - Click on the blue - Publish icon next to Rstudio to launch the shiny server prompt.
 
-  ![](publish.gif)
+  ![](Publish.gif)
