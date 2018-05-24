@@ -351,4 +351,3 @@ these `github` repositories:
   
   - [Redistricting through Machine Learning](https://indiana-nikel.shinyapps.io/gerrymandering_app/) <i class="em em-heart"></i>  
   source code [here](https://github.com/indiana-nikel/gerrymandering/tree/master/application/gerrymandering_app)
-  
