@@ -9,25 +9,46 @@
 
 library(shiny)
 
-# Define UI for application that draws a histogram
+library(ggplot2)
+library(dplyr)
+library(gapminder)
+
+dat <- gapminder::gapminder 
+dat <- dat %>% filter(country %in% c('United States','Canada'))
+
+
+# Define UI for your shiny application 
 ui <- fluidPage(
    
    # Application title
-   titlePanel("Old Faithful Geyser Data"),
+   titlePanel("Gapminder"),
+
    
    # Sidebar with a slider input for number of bins 
    sidebarLayout(
       sidebarPanel(
-         sliderInput("bins",
-                     "Number of bins:",
-                     min = 1,
-                     max = 50,
-                     value = 30)
+        sliderInput("Year",
+                    label = h5("Range of years:"),
+                    min = 1952,
+                    max = 2007,
+                    value = c(1952, 2007), 
+                    step = 5
+                    ),
+         
+         radioButtons("Variable",
+                      label = h5("Select Variable"),
+                      choices = c("Population" = "pop",
+                                  "Life Expectancy" = "lifeExp",
+                                  "GDP Per Capita" = "gdpPercap")
+                      )
       ),
+      
       
       # Show a plot of the generated distribution
       mainPanel(
-         plotOutput("distPlot")
+         plotOutput("GapminderPlot"),
+         tableOutput("GapminderTable")
+         
       )
    )
 )
@@ -35,13 +56,26 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram
 server <- function(input, output) {
    
-   output$distPlot <- renderPlot({
-      # generate bins based on input$bins from ui.R
-      x    <- faithful[, 2] 
-      bins <- seq(min(x), max(x), length.out = input$bins + 1)
-      
-      # draw the histogram with the specified number of bins
-      hist(x, breaks = bins, col = 'darkgray', border = 'white')
+   output$GapminderPlot <- renderPlot({
+     
+     
+
+    dat %>% filter(year >= min(input$Year) & year <= max(input$Year)) %>%
+       ## Use aes_string to map input variable to the aesthetics as string
+     ggplot(aes_string(x = "year",y = input$Variable,colour = "country")) +
+       geom_line(size = 1) +
+       xlab("Year") +
+       labs(title = (paste0("US - CANADA ",input$Variable," comparison between ",min(input$Year),"-",max(input$Year)))) +
+       ylab(aes_string(input$Varible)) + theme_bw()
+
+
+
+   })
+   
+   output$GapminderTable <- renderTable({
+     
+     data <- dat %>% filter(year >= min(input$Year) & year <= max(input$Year)) ## filter data for seleted year range
+     
    })
 }
 
