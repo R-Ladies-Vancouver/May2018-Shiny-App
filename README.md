@@ -1,2 +1,4 @@
 # May2018-Shiny-App
-Code and documentation for R-Ladies Vancouver Shiny Workshop
+Hello! In this repository you will find materials for R Shiny workshop by R-Ladies Vancouver:
+![](presentation/images/Poster.PNG)
+
