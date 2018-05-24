@@ -14,6 +14,8 @@ output:
 knitr::opts_chunk$set(echo = TRUE)
 ```
 
+<link href="https://afeld.github.io/emoji-css/emoji.css" rel="stylesheet">
+
 # WHAT IS R-SHINY?
 
 <br/>
@@ -24,8 +26,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 - 2 main components:
 
-  - User Interface
-  - Server
+  - User Interface (`ui`)
+  - Server (`server`)
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
 background-size: 400px
@@ -35,12 +37,15 @@ class: left, middle
 # MINI CHALLENGE #1
 
 - Create a plot with the gapminder dataset
-  - `life expectancy` vs `year`
-  - `population` vs `year`
+  - `lifeExp` vs `gpdPercap`
+  - `pop` vs `year`
+  - `lifeExp` vs `year`
   - etc.
 ---
 
-```{r, fig.height=4, dev='svg'}
+# POSSIBLE SOLUTION TO #1
+
+```{r, fig.height=3, dev='svg'}
 library(gapminder)
 library(ggplot2)
 
@@ -57,7 +62,7 @@ ggplot(data = gapminder,
 
 # A VERY BASIC SHINY APP
 
-- Make sure you have the `shiny` package installed
+- Make sure you have the `shiny` package installed 
 
 ```{r, eval=FALSE}
 install.packages("shiny")
@@ -78,6 +83,7 @@ shinyApp(ui = ui, server = server) # launch the app
 💜💜[Shiny App with Gapminder Dataset](https://ace8.shinyapps.io/test/)💜💜
 
 ---
+
 background-image: url(images/04_RLadiesVan-logo.jpg)
 background-size: 400px
 background-position: 100% 50%
@@ -88,21 +94,24 @@ class: left, middle
 
 - Create a local folder
 
-- Create an R script and name it `app.R`
+- Create an R script file and name it `app.R`
 
 - Create your own "very basic" app
 
-- Make sure your simple app runs
+- Make sure your simple app runs  
+**Hint:** Select all and hit `Run`
 
 ---
 
 # THE LAYOUT
 
 .pull-left[
+
 ```{r, eval=FALSE}
 library(shiny)
 
 ui <- fluidPage(
+  titlePanel(), #<<
   sidebarLayout( #<<
     sidebarPanel( #<<
       # Input() functions #<<
@@ -128,7 +137,7 @@ shinyApp(ui = ui, server = server)
 
 ---
 
-# INPUTS
+# `ui`: INPUTS
 
 <br/>
 
@@ -175,16 +184,14 @@ as options to select from
 
 ---
 
-<br/>
-<br/>
+# POSSIBLE SOLUTION TO #3 
 
 ```{r, eval=FALSE}
 ui <- fluidPage(
-   titlePanel("Gapminder"),
+   titlePanel("Gapminder"), #<<
 
    sidebarLayout(
       sidebarPanel( 
-        
         sliderInput("Year",   #<<
                     label = h5("Range of years:"),#<<
                     min = 1952,#<<
@@ -200,36 +207,27 @@ ui <- fluidPage(
                                   "GDP Per Capita" = "gdpPercap")#<<
                       )#<<
       ),
-      
       mainPanel()
    )
 )
 ```
-
-
 ---
 
-# OUTPUTS
-
-<br/>
+# `ui`: OUTPUTS
 
 ```{r, eval=FALSE}
-library(shiny)
-
 ui <- fluidPage(
-  
   sliderInput(inputId = "num",
               label = "Choose a number",
               value = 25, min = 1, max = 100),
   
   plotOutput("hist") #<<
-  
 )
-
-server <- function(input, output) {}
-
-shinyApp(ui = ui, server = server)
 ```
+
+### Some other output functions:
+
+![](images/output_functions.png)
 
 ---
 
@@ -255,7 +253,6 @@ ui <- fluidPage(
                                   "GDP Per Capita" = "gdpPercap")
                       )
       ),
-      
       mainPanel(
          plotOutput("GapminderPlot"), #<<
          tableOutput("GapminderTable") #<<
@@ -270,20 +267,62 @@ ui <- fluidPage(
 
 - Assemble inputs into outputs
 
-1) Save objects to display to output$
+- Follow 3 steps for interactive plots:
+
+  1) Save objects to display to `output$`  
+  2) Build objects to display with `render*()`  
+  3) Use input values with `input$*`
+  
+<br/>
   
 ```{r, eval=FALSE}
 server <- function(input, output) {
-  output$hist <- #code
+  output$hist <- renderPlot({ #<<
+    hist(rnorm(input$num), main = "Normal Distribution") #<<
+  })
 }
 ```
   
-2) Build objects to display with render*()
-  
-  - `render*()` functions --> build reactive output to display in UI
-  
-3) Use input values with `input$*`
-  
+---
+background-image: url(images/04_RLadiesVan-logo.jpg)
+background-size: 400px
+background-position: 100% 50%
+class: left, middle
+
+# MINI CHALLENGE #4
+
+- Create a plot in the Gapminder app that would  
+use the variable chosen in the `RadioButtons()`  
+and plot it against `year`
+
+### Bonus:  
+
+- Build interactivity based on the `year` range  
+selected in the slider
+
+---
+
+# POSSIBLE SOLUTION TO #4
+
+```{r, eval=FALSE}
+server <- function(input, output) {
+   
+   output$GapminderPlot <- renderPlot({ #<<
+    dat %>% filter(year >= min(input$Year) & year <= max(input$Year)) %>% #<<
+     ggplot(aes_string(x = "year",y = input$Variable,colour = "country")) + #<<
+       geom_line(size = 1) + #<<
+       xlab("Year") + #<<
+       labs(title = (paste0("US - CANADA ", input$Variable, #<<
+                            " comparison between ", min(input$Year), #<<
+                            "-", max(input$Year)))) + #<<
+       ylab(aes_string(input$Varible)) + theme_bw() #<<
+   }) #<<
+   
+   output$GapminderTable <- renderTable({ 
+     data <- dat %>% filter(year >= min(input$Year) & year <= max(input$Year)) 
+   })
+}
+```
 
 ---
 background-image: url(images/04_RLadiesVan-logo.jpg)
@@ -293,14 +332,22 @@ class: left, middle
 
 # CHALLENGES NEVER END!
 
-- [RStudio Tutorials](https://shiny.rstudio.com/tutorial/) 
+- [RStudio Tutorials](https://shiny.rstudio.com/tutorial/)
 
-- For more Shiny app examples see these `github` repositories
+- For more Shiny app examples see  
+these `github` repositories:
 
-* [Gapminder App](https://akshi8.shinyapps.io/Gapminder/)
-  - Source Code : [here](https://github.com/akshi8/Gapminder/blob/master/Gapminder/app.R)
-
-
-* [US Crime Statistics App](https://akshi8.shinyapps.io/US_Crime_Report/)
-  - Source Code : [here](https://github.com/akshi8/US_Crime_Report/blob/master/code/app.R)
-
+  - [Gapminder](https://akshi8.shinyapps.io/Gapminder/) <i class="em em-blue_heart"></i>  
+  source code [here](https://github.com/akshi8/Gapminder/blob/master/Gapminder/app.R)
+    
+  - [US Crime Statistics](https://akshi8.shinyapps.io/US_Crime_Report/) <i class="em em-orange_heart"></i>  
+  source code [here](https://github.com/akshi8/US_Crime_Report/blob/master/code/app.R)
+  
+  - [The Noble Grapes](https://charcarriero.shinyapps.io/noble-grapes/) <i class="em em-green_heart"></i>  
+  source code [here](https://github.com/charcarr/shiny-wine/blob/master/noble-grapes/app.R)
+  
+  - [Marshall Crime Data Analysis](https://simranubc.shinyapps.io/Marshall-crime-analysis/) <i class="em em-purple_heart"></i>  
+  source code [here](https://github.com/simrnsethi/marshall-crime-analysis)
+  
+  - [Redistricting through Machine Learning](https://indiana-nikel.shinyapps.io/gerrymandering_app/) <i class="em em-heart"></i>  
+  source code [here](https://github.com/indiana-nikel/gerrymandering/tree/master/application/gerrymandering_app)
